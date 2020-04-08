@@ -1,12 +1,116 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#000000" />
+
+        <title>{% block title %}Api Task{% endblock %}</title>
+
+        {% block stylesheets %}
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        {% endblock %}
+        {% block javascripts %}
+            <script
+                    src="https://code.jquery.com/jquery-3.4.1.js"
+                    integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+                    crossorigin="anonymous">
+
+            </script>
+            <script>
+                $(document).ready(function () {
+                    let route = generateAndSHowApiRoute();
+
+                    $(".apiVariable").on('change', function() {
+                        route = generateAndSHowApiRoute();
+                    });
+
+                    $("#requestBtn").on('click', function() {
+                        json = sendRequestAndSetJsonResponse(route);
+                    })
+                });
+
+                function generateAndSHowApiRoute () {
+                    let productId = $('#productId').val();
+                    let countryCode = $('#countryCode').val();
+
+                    let apiRoute = `/api/v1/products/${productId}/country-price/${countryCode}`;
+
+                    $apiRouteContainer = $('#apiRouteContainer');
+                    $apiRouteContainer.html(apiRoute);
+                }
+
+                function sendRequestAndSetJsonResponse () {
+                    const route = $('#apiRouteContainer').html();
+
+                    jQuery.get(route, function (data) {
+                        $('#responseJsonContainer').html(JSON.stringify(data));
+                    });
+                }
+            </script>
+        {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        {% block body %}
+            <div class="app bg-light text-black">
+                <div class="container">
+                    <div class="row">
+                        {% block content %}
+                            <div class="col-md-12 mb-3">
+                                <h1>API Test Task</h1>
+
+                                <p>
+                                    Simple, single-endpoint API for retrieving product price (in relevant currency)
+                                    based on product id and country code in the uri.
+                                </p>
+                                <p>
+                                    Find source code at:
+                                </p>
+                                <p>
+                                    Additional challenge: it's database-free -> all data is being generated via code
+                                    using generators and being managed using in-memory repositories.
+                                </p>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <h3>Variables:</h3>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="productId">Choose a product:</label>
+                                <select id="productId" name="productId" class="apiVariable">
+                                    <option value="1">Product 1</option>
+                                    <option value="2">Product 2</option>
+                                    <option value="3">Product 3</option>
+                                    <option value="3">Product 4</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="countryCode">Choose a country:</label>
+                                <select id="countryCode" name="countryCode" class="apiVariable">
+                                    <option value="PL">Poland</option>
+                                    <option value="DE">Germany</option>
+                                    <option value="FR">France</option>
+                                    <option value="US">United States</option>
+                                    <option value="PR">Puerto Rico</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <h3>Generated URI for request</h3>
+                                <p id="apiRouteContainer" class="text-danger">
+                                    ...
+                                </p>
+                                <button id="requestBtn" class="btn btn-primary">Send request!</button>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <h3>Response JSON</h3>
+                                <div id="responseJsonContainer" class="border border-black">
+                                    ...
+                                </div>
+                            </div>
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
     </body>
 </html>
