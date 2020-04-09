@@ -3,17 +3,18 @@
 namespace App\Service;
 
 use App\Entity\Currency;
+use Money\Money;
 
 class CurrencyExchanger
 {
     /**
-     * @param int $plnPrice
+     * @param Money $plnPrice
      * @param Currency $currency
      *
-     * @return float
+     * @return Money
      */
-    public function exchangeCurrency(int $plnPrice, Currency $currency): float
+    public function exchangeCurrency(Money $plnPrice, Currency $currency): Money
     {
-        return (float) (round($plnPrice / $currency->getRate(), 2));
+        return $plnPrice->divide($currency->getRate());
     }
 }

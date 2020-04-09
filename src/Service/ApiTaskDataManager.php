@@ -23,6 +23,11 @@ class ApiTaskDataManager
      */
     private $productRepository;
 
+    /**
+     * @param InMemoryCurrencyRepository $currencyRepository
+     * @param InMemoryCountryRepository $countryRepository
+     * @param InMemoryProductRepository $productRepository
+     */
     public function __construct(
 
         InMemoryCurrencyRepository $currencyRepository,

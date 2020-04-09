@@ -40,6 +40,9 @@ class CountryGenerator
      */
     private $currencyRepository;
 
+    /**
+     * @param InMemoryCurrencyRepository $currencyRepository
+     */
     public function __construct(InMemoryCurrencyRepository $currencyRepository)
     {
         $this->currencyRepository = $currencyRepository;

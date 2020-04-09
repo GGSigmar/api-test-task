@@ -13,7 +13,7 @@ class ProductController extends BaseApiController
     public function getProductCountryPriceAction(int $productId, string $countryCode, ProductPriceService $productPriceService)
     {
         try {
-            $currencyPrice = $productPriceService->getProductPriceForCountry($productId, $countryCode);
+            $currencyPrice = $productPriceService->getFormattedProductPriceForCountry($productId, $countryCode);
         } catch (\Exception $e) {
             return $this->createApiErrorResponse($e->getMessage(), $e->getCode());
         }

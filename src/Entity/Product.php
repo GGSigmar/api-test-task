@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use Ramsey\Uuid\Uuid;
+use Money\Money;
 
 class Product
 {
@@ -12,7 +12,7 @@ class Product
     private $id;
 
     /**
-     * @var int
+     * @var Money
      */
     private $price;
 
@@ -27,7 +27,7 @@ class Product
          * for product using its id, I decided the simplest solution here is to set integer id by hand
          */
         $this->id = $id;
-        $this->price = $price;
+        $this->price = Money::PLN($price);
     }
 
     /**
@@ -39,17 +39,17 @@ class Product
     }
 
     /**
-     * @return int
+     * @return Money
      */
-    public function getPrice(): int
+    public function getPrice(): Money
     {
         return $this->price;
     }
 
     /**
-     * @param int $price
+     * @param Money $price
      */
-    public function setPrice(int $price): void
+    public function setPrice(Money $price): void
     {
         $this->price = $price;
     }

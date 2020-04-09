@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Entity\Country;
+use App\Entity\Product;
 use App\Exception\NotFoundException;
 
 class ProductPriceService
@@ -16,12 +18,24 @@ class ProductPriceService
      */
     private $currencyExchanger;
 
+    /**
+     * @var PriceFormatter
+     */
+    private $priceFormatter;
+
+    /**
+     * @param CurrencyExchanger $currencyExchanger
+     * @param ApiTaskDataManager $dataManager
+     * @param PriceFormatter $priceFormatter
+     */
     public function __construct(
         CurrencyExchanger $currencyExchanger,
-        ApiTaskDataManager $dataManager
+        ApiTaskDataManager $dataManager,
+        PriceFormatter $priceFormatter
     ) {
         $this->dataManager = $dataManager;
         $this->currencyExchanger = $currencyExchanger;
+        $this->priceFormatter = $priceFormatter;
     }
 
     /**
@@ -32,35 +46,24 @@ class ProductPriceService
      *
      * @throws NotFoundException
      */
-    public function getProductPriceForCountry(int $productId, string $countryCode): string
+    public function getFormattedProductPriceForCountry(int $productId, string $countryCode): string
     {
         $product = $this->dataManager->getProductRepository()->getOneById($productId);
 
         if ($product === null) {
-            throw new NotFoundException('product');
+            throw new NotFoundException(Product::class);
         }
 
         $country = $this->dataManager->getCountryRepository()->getOneByCode(strtoupper($countryCode));
 
         if ($country === null) {
-            throw new NotFoundException('country');
+            throw new NotFoundException(Country::class);
         }
 
         $currency = $country->getCurrency();
 
         $foreignCurrencyPrice = $this->currencyExchanger->exchangeCurrency($product->getPrice(), $currency);
 
-        return $this->formatPriceInteger($foreignCurrencyPrice, $currency->getCode());
-    }
-
-    /**
-     * @param float $price
-     * @param string $currencyCode
-     *
-     * @return string
-     */
-    private function formatPriceInteger(float $price, string $currencyCode): string
-    {
-        return (string) (round(($price / 100), 2)) . " ${currencyCode}";
+        return $this->priceFormatter->formatMoneyPrice($foreignCurrencyPrice, $currency->getCode());
     }
 }

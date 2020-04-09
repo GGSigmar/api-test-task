@@ -12,7 +12,8 @@ class BaseController
      * @Route("/", name="index")
      * @Template("base.html.twig")
      */
-    public function indexAction(ApiTaskDataManager $dataManager) {
+    public function indexAction(ApiTaskDataManager $dataManager)
+    {
         return [];
     }
 }

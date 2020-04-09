@@ -2,14 +2,19 @@
 
 namespace App\Exception;
 
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class NotFoundException extends \Exception
 {
-    private const MESSAGE = "Entity '%s' not found, sorry!";
+    private const MESSAGE = "Desired entity of type '%s' not found, sorry!";
 
-    public function __construct($entityType, $code = 404, Throwable $previous = null)
+    /**
+     * @param $entityType
+     * @param Throwable|null $previous
+     */
+    public function __construct($entityType, Throwable $previous = null)
     {
-        parent::__construct(sprintf(self::MESSAGE, $entityType), $code, $previous);
+        parent::__construct(sprintf(self::MESSAGE, $entityType), Response::HTTP_NOT_FOUND, $previous);
     }
 }
